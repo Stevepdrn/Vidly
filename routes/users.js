@@ -1,4 +1,6 @@
-// const bcrypt = require('bcrypt');
+const Joi = require('@hapi/joi');
+const passwordComplexity = require('joi-password-complexity');
+
 const _ = require('lodash');
 const {
     User,
@@ -7,6 +9,16 @@ const {
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
+
+const complexityOptions = {
+    min: 5,
+    max: 250,
+    lowerCase: 1,
+    upperCase: 1,
+    numeric: 1,
+    symbol: 1,
+    requirementCount: 2,
+};
 
 
 router.post('/', async (req, res) => {
@@ -21,8 +33,18 @@ router.post('/', async (req, res) => {
     if (user) return res.status(400).send('User already registered.');
 
     user = new User(_.pick(req.body, ['name', 'email', 'password']));
-    // const salt = await bcrypt.genSalt(10);
-    // user.password = await bcrypt.hash(user.password, salt);
+    
+    function validateUser(user) {
+        const schema = Joi.object({
+            name: Joi.string().min(1).max(55).required(),
+            email: Joi.string().min(5).max(255).required().email(),
+            password: passwordComplexity(complexityOptions)
+        });
+
+        return schema.validate(user);
+    }
+
+    validateUser();
     await user.save();
 
 
