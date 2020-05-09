@@ -1,5 +1,6 @@
-const Joi = require('joi');
 const mongoose = require('mongoose');
+const Joi = require('@hapi/joi');
+const PasswordComplexity = require('joi-password-complexity');
 
 
 const User = mongoose.model('User', new mongoose.Schema({
@@ -24,15 +25,37 @@ const User = mongoose.model('User', new mongoose.Schema({
     }
 }));
 
+
+// function validateUser(user) {
+
+//     const schema = {
+//         name: Joi.string().min(5).max(50).required(),
+//         email: Joi.string().min(5).max(255).required().email(),
+//         password: Joi.string().min(5).max(255).required()
+//     };
+
+const complexityOptions = {
+    min: 5,
+    max: 250,
+    lowerCase: 1,
+    upperCase: 1,
+    numeric: 1,
+    symbol: 1,
+    requirementCount: 4
+};
+
+// PasswordComplexity(complexityOptions).validate(User.password);
+
 function validateUser(user) {
-    const schema = {
+    const schema = Joi.object({
         name: Joi.string().min(5).max(50).required(),
         email: Joi.string().min(5).max(255).required().email(),
-        password: Joi.string().min(5).max(255).required()
-    };
+        password: PasswordComplexity(complexityOptions)
+    });
 
-    return Joi.validate(user, schema);
+    return schema.validate(user);
+
 }
 
-exports.User = User;
 exports.validate = validateUser;
+exports.User = User;
