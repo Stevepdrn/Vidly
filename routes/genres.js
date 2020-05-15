@@ -1,4 +1,7 @@
-// const Joi = require('joi'); //moved to genre.js
+// const Joi = require('@hapi/joi'); //moved to genre.js
+const auth = require('../middleware/auth');
+const admin = require('../middleware/admin');
+
 const {
     Genre,
     validate
@@ -14,7 +17,7 @@ router.get('/', async (req, res) => {
     res.send(genres);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const {
         error
     } = validate(req.body);
@@ -44,22 +47,16 @@ router.put('/:id', async (req, res) => {
     });
 
 
-    // const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send('The genre with given ID was not found !');
 
 
-    // genre.name = req.body.name;
     res.send(genre);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
     const genre = await Genre.findByIdAndRemove(req.params.id);
 
-    // const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send('The genre with given ID was not found !');
-
-    // const index = genres.indexOf(genre);
-    // genres.splice(index, 1);
 
     res.send(genre);
 });
@@ -68,7 +65,6 @@ router.delete('/:id', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const genre = await Genre.findById(req.params.id);
 
-    // const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
     res.send(genre);
 });

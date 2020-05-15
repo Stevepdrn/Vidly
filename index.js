@@ -1,5 +1,5 @@
 const config = require('config');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 const mongoose = require('mongoose');
@@ -15,8 +15,8 @@ const express = require('express');
 const app = express();
 
 
-if (!config.get('StvPrivateKey')) {
-    console.error('FATAL ERROR: StvPrivateKey is not defined.');
+if (!config.get('stvPrivateKey')) {
+    console.error('FATAL ERROR: stvPrivateKey is not defined.');
     process.exit(1);
 }
 
