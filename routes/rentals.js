@@ -58,7 +58,7 @@ router.post('/', async (req, res) => {
                     numberInStock: -1
                 }
             })
-            .run(); //NOTE: must call .run() or none of the previous operations will performk
+            .run(); //NOTE: must call .run() or none of the previous operations will perform
 
         res.send(rental);
     } catch (ex) {

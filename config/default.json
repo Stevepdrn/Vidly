@@ -1,3 +1,4 @@
 {
-    "stvPrivateKey": ""
+    "jwtPrivateKey": "",
+    "db": "mongodb://localhost/vidly"
 }
