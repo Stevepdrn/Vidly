@@ -1,4 +1,4 @@
-// const Joi = require('@hapi/joi'); //moved to genre.js
+const validateObjectId = require('../middleware/validateObjectId');
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
 
@@ -26,7 +26,6 @@ router.post('/', auth, async (req, res) => {
     let genre = new Genre({
         name: req.body.name
     });
-
     genre = await genre.save();
 
     res.send(genre);
@@ -62,13 +61,11 @@ router.delete('/:id', [auth, admin], async (req, res) => {
 });
 
 
-router.get('/:id', async (req, res) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id))
-        return res.status(404).send('Invalid ID...');
-
+router.get('/:id', validateObjectId, async (req, res) => {
     const genre = await Genre.findById(req.params.id);
 
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
+
     res.send(genre);
 });
 
